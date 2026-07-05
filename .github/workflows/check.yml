@@ -1,0 +1,37 @@
+name: CT8 注册队列监控
+
+on:
+  schedule:
+    # 每30分钟检查一次 (UTC)
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+    inputs:
+      force_notify:
+        description: "强制发送当前状态"
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 恢复已注册记录
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: /tmp/ct8_registered.json
+          key: ct8-registered-v1
+
+      - name: 运行检查
+        env:
+          CT8_EMAILS: ${{ secrets.CT8_EMAILS }}
+          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+          TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
+        run: python3 ct8_check.py
