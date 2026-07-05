@@ -16,7 +16,7 @@ API_URL = "https://ct8.00666.xyz"
 MAX_RETRIES = 3
 
 # 要注册的邮箱（环境变量，逗号分隔）
-EMAILS_STR = os.environ.get("CT8_EMAILS", "ohjustb@outlook.com,hubtpp@gmail.com")
+EMAILS_STR = os.environ.get("CT8_EMAILS", "ohjustb@outlook.com,hubtpp@gmail.com,acehhlmm@gmail.com")
 EMAILS = [e.strip() for e in EMAILS_STR.split(",") if e.strip()]
 
 # Telegram 通知
