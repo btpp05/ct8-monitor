@@ -1,16 +1,7 @@
 name: CT8 注册队列监控
 
 on:
-  schedule:
-    # 每30分钟检查一次 (UTC)
-    - cron: '*/30 * * * *'
   workflow_dispatch:
-    inputs:
-      force_notify:
-        description: "强制发送当前状态"
-        required: false
-        type: boolean
-        default: false
 
 jobs:
   check:
