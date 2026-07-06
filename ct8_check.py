@@ -54,7 +54,7 @@ def send_tg(text):
 
 def build_opener():
     """创建支持代理的 opener"""
-    proxy = os.environ.get("HTTP_PROXY") or os.environ.get("http_proxy")
+    proxy = os.environ.get("HTTP_PROXY") or os.environ.get("http_proxy") or os.environ.get("HTTPS_PROXY")
     if proxy:
         proxy_support = urllib.request.ProxyHandler({
             "http": proxy,
