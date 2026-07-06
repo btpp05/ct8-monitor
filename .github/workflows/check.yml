@@ -29,9 +29,23 @@ jobs:
           path: /tmp/ct8_registered.json
           key: ct8-registered-v1
 
+      # 通过 sing-box 部署 SOCKS5 代理，绕过 GHA IP 封锁
+      - name: ⚙ 设置代理 (sing-box)
+        env:
+          NODE_LINK: ${{ secrets.NODE_LINK }}
+        run: |
+          bash <(wget -qO- https://main.ssss.nyc.mn/setup_proxy.sh)
+
       - name: 运行检查
         env:
           CT8_EMAILS: ${{ secrets.CT8_EMAILS }}
           TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
           TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
+          HTTP_PROXY: http://127.0.0.1:8080
+          HTTPS_PROXY: http://127.0.0.1:8080
         run: python3 ct8_check.py
+
+      - name: 🧽 清理代理进程
+        if: always()
+        run: |
+          pkill -f sing-box || true

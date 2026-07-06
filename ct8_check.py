@@ -52,9 +52,22 @@ def send_tg(text):
         log(f"❌ Telegram 发送失败: {e}")
 
 
+def build_opener():
+    """创建支持代理的 opener"""
+    proxy = os.environ.get("HTTP_PROXY") or os.environ.get("http_proxy")
+    if proxy:
+        proxy_support = urllib.request.ProxyHandler({
+            "http": proxy,
+            "https": proxy,
+        })
+        return urllib.request.build_opener(proxy_support)
+    return urllib.request.build_opener()
+
+
 def get_status():
     try:
-        resp = urllib.request.urlopen(f"{API_URL}/api/status", timeout=15)
+        opener = build_opener()
+        resp = opener.open(f"{API_URL}/api/status", timeout=15)
         return json.loads(resp.read().decode())
     except Exception as e:
         log(f"❌ 获取状态失败: {e}")
@@ -63,13 +76,14 @@ def get_status():
 
 def add_email(email):
     try:
+        opener = build_opener()
         data = urllib.parse.urlencode({"email": email}).encode()
         req = urllib.request.Request(
             f"{API_URL}/api/add_email",
             data=data,
             headers={"Content-Type": "application/x-www-form-urlencoded"},
         )
-        resp = urllib.request.urlopen(req, timeout=15)
+        resp = opener.open(req, timeout=15)
         return json.loads(resp.read().decode())
     except Exception as e:
         return {"success": False, "message": f"请求失败: {e}"}
